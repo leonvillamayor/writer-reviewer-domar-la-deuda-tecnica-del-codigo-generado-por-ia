@@ -1,0 +1,8 @@
+# langgraph_writer_reviewer.py (esquema)
+builder = StateGraph(WState)
+builder.add_node("test_writer", write_tests_node)
+builder.add_node("impl_writer", impl_until_green_node)
+builder.add_node("reviewer", static_review_node)
+builder.add_conditional_edges("impl_writer", lambda s: "reviewer" if s.green else "impl_writer")
+builder.add_edge("test_writer", "impl_writer")
+builder.add_conditional_edges("reviewer", lambda s: END if s.approved else "test_writer")
